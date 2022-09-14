@@ -92,6 +92,8 @@ run_dataIntegration <- function(scdata, config) {
   exclude_groups <- config$dimensionalityReduction$excludeGeneCategories
 
 
+  message("Order of samples: ", scdata$samples)
+  message("Order of samples - 2: ", paste(unique(scdata$samples), sep=" "))
   nsamples <- length(unique(scdata$samples))
   if (nsamples == 1) {
     method <- "unisample"
