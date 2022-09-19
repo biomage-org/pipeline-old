@@ -125,10 +125,10 @@ merge_scdata_list <- function(scdata_list) {
 run_dataIntegration <- function(scdata, config) {
 
   # get method and settings
-  method <- config$dataIntegration$method
+  # method <- config$dataIntegration$method
   npcs <- config$dimensionalityReduction$numPCs
   exclude_groups <- config$dimensionalityReduction$excludeGeneCategories
-
+  method <- "scvi"
 
   nsamples <- length(unique(scdata$samples))
   if (nsamples == 1) {
@@ -580,10 +580,10 @@ generate_elbow_plot_data <- function(scdata_integrated, config, task_name, var_e
 
 
 run_scvi <- function(scdata, config) {
-  settings <- config$dataIntegration$methodSettings[["scvi"]]
+  # settings <- config$dataIntegration$methodSettings[["scvi"]]
 
-  nfeatures <- settings$numGenes
-  normalization <- settings$normalisation
+  nfeatures <- 2000
+  # normalization <- settings$normalisation
   npcs <- config$dimensionalityReduction$numPCs
 
   # grep in case misspelled
@@ -602,8 +602,6 @@ run_scvi <- function(scdata, config) {
 
   message("Setup python packages")
 
-  # reticulate::install_miniconda()
-  # reticulate::conda_install(packages = c("scvi"), python_version = "3.10")
   # import the required python packages
   # scanpy <- reticulate::import("scanpy", convert = FALSE)
   scvi <- reticulate::import("scvi", convert = FALSE)

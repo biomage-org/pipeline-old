@@ -2440,6 +2440,21 @@
         "scales"
       ]
     },
+    "sceasy": {
+      "Package": "sceasy",
+      "Version": "0.0.7",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "cellgeni",
+      "RemoteRepo": "sceasy",
+      "RemoteRef": "master",
+      "RemoteSha": "0cfc0e39da4b3ce4abf19d2171daa0e4d2acdd03",
+      "Hash": "1a2c43e9613da404bd79a0e043f35b22",
+      "Requirements": [
+        "reticulate"
+      ]
+    },
     "scran": {
       "Package": "scran",
       "Version": "1.24.0",
