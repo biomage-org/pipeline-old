@@ -597,6 +597,9 @@ run_scvi <- function(scdata, config) {
     Seurat::NormalizeData(scdata, normalization.method = normalization, verbose = FALSE)
   scdata <-
     Seurat::FindVariableFeatures(scdata, nfeatures = nfeatures, verbose = FALSE)
+
+  scdata <- normalize_data(scdata, normalization, "harmony", nfeatures)
+
   top_2000_features <-
     head(Seurat::VariableFeatures(scdata), 2000)
 
@@ -648,7 +651,7 @@ run_scvi <- function(scdata, config) {
   # remove the adata object and cleanup
   rm(adata)
   gc()
-
+  scdata <- Seurat::RunPCA(scdata, verbose = FALSE)
   scdata <- add_dispersions(scdata)
   scdata@misc[["active.reduction"]] <- "scvi"
 
