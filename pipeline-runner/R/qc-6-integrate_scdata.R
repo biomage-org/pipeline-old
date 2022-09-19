@@ -129,6 +129,7 @@ run_dataIntegration <- function(scdata, config) {
   npcs <- config$dimensionalityReduction$numPCs
   exclude_groups <- config$dimensionalityReduction$excludeGeneCategories
   method <- "scvi"
+  npcs <- 30
 
   nsamples <- length(unique(scdata$samples))
   if (nsamples == 1) {
