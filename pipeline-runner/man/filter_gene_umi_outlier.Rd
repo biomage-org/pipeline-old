@@ -5,7 +5,7 @@
 \title{STEP 4. Number of genes vs UMIs filter}
 \usage{
 filter_gene_umi_outlier(
-  scdata,
+  scdata_list,
   config,
   sample_id,
   cells_id,
@@ -14,17 +14,17 @@ filter_gene_umi_outlier(
 )
 }
 \arguments{
-\item{scdata}{\code{SeuratObject}}
+\item{scdata_list}{list of \code{SeuratObject}}
 
 \item{config}{list containing the following information
-- enable: true/false. Refering to apply or not the filter.
+- enable: true/false. Referring to apply or not the filter.
 - auto: true/false. 'True' indicates that the filter setting need to be changed depending on some sensible value (it requires
 to call generate_default_values_numGenesVsNumUmis)
 - filterSettings: slot with thresholds
 - regressionType: String. Regression to be used: {linear or spline}
 - regressionTypeSettings: list with the config settings for all the regression type options
 - linear and spline: for each there is only one element:
-- p.level: which refers to  confidence level for deviation from the main trend}
+- p_level: which refers to  confidence level for deviation from the main trend}
 
 \item{sample_id}{value in \code{scdata$samples} to apply filter for}
 
@@ -39,6 +39,21 @@ a list with the filtered seurat object by numGenesVsNumUmis, the config and the 
 Eliminates cells based on a p value and a linear regression generated from numGenes vs numUmis
 }
 \details{
-This filter focuses on filter cells that are far from the behaviour of the relationship between the number of genes (it measures the number of
-genes in a cell that has at least one count) and the number of UMIs/molecules (the total number of counts in a cell).
+This filter focuses on filter cells that are far from the behaviour of the
+relationship between the number of genes (it measures the number of
+genes in a cell that has at least one count) and the number of UMIs/molecules
+(the total number of counts in a cell).
+The cutoff bands for filtering are derived from the prediction interval.
+Prediction interval represents the likelihood that the predicted value will be
+between the upper and lower limits of the prediction interval.
+Prediction intervals are similar to confidence intervals, but on top of the sampling
+uncertainty, they also express uncertainty around a single value.
+They must account for the uncertainty in estimating the population mean,
+plus the random variation of the individual values.
+Higher prediction interval means higher probability of the value to be inside
+the range. Consequently, the size of the interval will be wider.
+The higher the prediction level, the less stringent we are when filtering the cells.
+Conversely, the lower the prediction level, the more stringent we are,
+and we exclude more cells that are far from the behaviour of the relationship
+between the number of genes and the number of UMIs/molecules.
 }

@@ -16,14 +16,16 @@ endif
 #--------------------------------------------------
 # Targets
 #--------------------------------------------------
-install: 
+install:
 	@echo "Installing local runner"
 	@(cd ./local-runner && npm install)
-	@echo "Installing R env packages"
+	@echo "Installing renv packages"
 	@(cd ./pipeline-runner && R -e "renv::restore()")
-build: 
+update-sysdata: 
     # regenerate sysdata.rda env file
-	@(cd ./pipeline-runner && Rscript data-raw/sysdata.R)
+    # this step depends on your local R installation to run 
+	@(cd ./pipeline-runner && Rscript data-raw/sysdata.R)	
+build: 
 	@(cd ./local-runner && npm run build)
 test:
 	@(cd ./pipeline-runner && R -e "devtools::test()")

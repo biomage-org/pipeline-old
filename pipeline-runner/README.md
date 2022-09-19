@@ -13,15 +13,15 @@ Task definitions for individual pipeline items are located under `R/`.
 Development
 -----------
 
-You can open the VS Code wrkspace in a development container through VS Code,
+You can open the VS Code workspace in a development container through VS Code,
 which will start the container.
 
 How to execute tasks locally
 ----------------------------
 
-We use the Biomage-maintained project `hms-dbmi-cellenics/inframock` to create a local
+We use the Biomage-maintained project `biomage-org/inframock` to create a local
 AWS environment that.
 
 Task execution is done through Step Function activities, which are created by
 other parts of the platform. You can use the project under `local-runner`
-to inspect this process. 
+to inspect this process.
