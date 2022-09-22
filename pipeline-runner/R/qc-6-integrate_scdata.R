@@ -585,29 +585,20 @@ run_scvi <- function(scdata, config) {
 
   nfeatures <- 2000
   # normalization <- settings$normalisation
-  npcs <- config$dimensionalityReduction$numPCs
 
-  # grep in case misspelled
-  # if (grepl("lognorm", normalization, ignore.case = TRUE))
   normalization <- "LogNormalize"
 
   message("Integrating with SCVI")
 
-  scdata <-
-    Seurat::NormalizeData(scdata, normalization.method = normalization, verbose = FALSE)
-  scdata <-
-    Seurat::FindVariableFeatures(scdata, nfeatures = nfeatures, verbose = FALSE)
-
   scdata <- normalize_data(scdata, normalization, "harmony", nfeatures)
 
   top_2000_features <-
-    head(Seurat::VariableFeatures(scdata), 2000)
+    head(Seurat::VariableFeatures(scdata), nfeatures)
 
 
   message("Setup python packages")
 
   # import the required python packages
-  # scanpy <- reticulate::import("scanpy", convert = FALSE)
   scvi <- reticulate::import("scvi", convert = FALSE)
 
   message("Converting to AnnData")
@@ -628,11 +619,17 @@ run_scvi <- function(scdata, config) {
 
   message("Creating SCVI model")
   # create the model
-  model <- scvi$model$SCVI(adata, n_layers = as.integer(2), n_latent = as.integer(30), gene_likelihood = "nb")
+  model <-
+    scvi$model$SCVI(
+      adata,
+      n_layers = as.integer(2),
+      n_latent = as.integer(30),
+      gene_likelihood = "nb"
+    )
 
   message("Training SCVI model")
   # train the model
-  model$train(max_epochs = as.integer(50))
+  model$train(max_epochs = as.integer(10))
 
   message("Extracting embedding, and adding to Seurat Object")
   # get the latent represenation
