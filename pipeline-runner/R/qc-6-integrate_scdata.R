@@ -629,7 +629,7 @@ run_scvi <- function(scdata, config) {
 
   message("Training SCVI model")
   # train the model
-  model$train(max_epochs = as.integer(10))
+  model$train()
 
   message("Extracting embedding, and adding to Seurat Object")
   # get the latent represenation
