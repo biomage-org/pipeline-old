@@ -9,6 +9,7 @@
     spec:
       restartPolicy: Always
       serviceAccountName: 'deployment-runner'
+      priorityClassName: high-priority
       containers:
       - name: "{{ .Release.Name }}"
         image: "{{ .Values.pipelineRunner.image }}"
