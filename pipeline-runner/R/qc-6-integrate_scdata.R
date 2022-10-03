@@ -26,6 +26,9 @@ integrate_scdata <- function(scdata_list, config, sample_id, cells_id, task_name
   scdata_list <- order_by_size(scdata_list)
   message("Started create_scdata for sample ", sample_id, "\n")
   scdata <- create_scdata(scdata_list, cells_id)
+  scdata <- Seurat::FindVariableFeatures(scdata, assay = "RNA", nfeatures = 2000, verbose = FALSE)
+  scdata <- Seurat::ScaleData(scdata, verbose = FALSE)
+  scdata <- Seurat::RunPCA(scdata, verbose = FALSE)
   message("Finished create_scdata for sample ", sample_id, "\n")
 
   # main function
@@ -127,8 +130,9 @@ learn_from_sketches <- function (scdata, scdata_sketches, scdata_int) {
   embeddings_sketch_int <- list(scdata_int@reductions[["harmony"]]@cell.embeddings[, 1:50])
 
   # use python script to learn integration from sketches and apply to whole dataset
-  source_python("R/learn-apply-transformation.py")
+  reticulate::source_python("R/learn-apply-transformation.py")
   learned_int <- apply_transf(embeddings_orig, embeddings_sketch, embeddings_sketch_int)
+  rownames(learned_int[[1]]) <- colnames(scdata)
 
   scdata[["harmony"]] <- Seurat::CreateDimReducObject(embeddings = learned_int[[1]], key = "harmony_", assay = Seurat::DefaultAssay(scdata))
   # scdata <- Seurat::RunUMAP(scdata, reduction = "harmony", dims = 1:50, verbose = FALSE)
@@ -170,7 +174,10 @@ run_dataIntegration <- function(scdata, scdata_sketches, config) {
   integration_function <- get(paste0("run_", method))
   scdata_int <- integration_function(scdata_sketches, config)
 
+  message("Started learning from sketched")
   scdata <- learn_from_sketches(scdata, scdata_sketches, scdata_int)
+  scdata@misc[["active.reduction"]] <- "harmony"
+  message("Finished learning from sketched")
 
   if (is.null(npcs)) {
     npcs <- get_npcs(scdata)
