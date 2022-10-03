@@ -30,8 +30,9 @@ integrate_scdata <- function(scdata_list, config, sample_id, cells_id, task_name
 
   # main function
   set.seed(RANDOM_SEED)
+  scdata_sketches <- perform_geomsketch(scdata)
   message("Started data integration")
-  scdata_integrated <- run_dataIntegration(scdata, config)
+  scdata_integrated <- run_dataIntegration(scdata, scdata_sketches, config)
   message("Finished data integration")
 
   # get  npcs from the UMAP call in integration functions
@@ -118,14 +119,33 @@ merge_scdata_list <- function(scdata_list) {
   return(scdata)
 }
 
+
+learn_from_sketches <- function (scdata, scdata_sketches, scdata_int) {
+  # get embeddings from splitted Seurat object
+  embeddings_orig <- list(scdata@reductions[["pca"]]@cell.embeddings[, 1:50])
+  embeddings_sketch <- list(scdata_sketches@reductions[["pca"]]@cell.embeddings[, 1:50])
+  embeddings_sketch_int <- list(scdata_int@reductions[["harmony"]]@cell.embeddings[, 1:50])
+
+  # use python script to learn integration from sketches and apply to whole dataset
+  source_python("R/learn-apply-transformation.py")
+  learned_int <- apply_transf(embeddings_orig, embeddings_sketch, embeddings_sketch_int)
+
+  scdata[["harmony"]] <- Seurat::CreateDimReducObject(embeddings = learned_int[[1]], key = "harmony_", assay = Seurat::DefaultAssay(scdata))
+  # scdata <- Seurat::RunUMAP(scdata, reduction = "harmony", dims = 1:50, verbose = FALSE)
+
+  return(scdata)
+}
+
+
 # This function covers
 #   - Integrate the data using the variable "type" (in case of data integration method is selected) and normalize using LogNormalize method.
 #   - Compute PCA analysis
 #   - To visualize the results of the batch effect, an UMAP with default setting has been made.
-run_dataIntegration <- function(scdata, config) {
+run_dataIntegration <- function(scdata, scdata_sketches, config) {
 
   # get method and settings
-  method <- config$dataIntegration$method
+  # method <- config$dataIntegration$method
+  method <- "harmony"
   npcs <- config$dimensionalityReduction$numPCs
   exclude_groups <- config$dimensionalityReduction$excludeGeneCategories
 
@@ -138,6 +158,7 @@ run_dataIntegration <- function(scdata, config) {
 
   # we need RNA assay to compute the integrated matrix
   Seurat::DefaultAssay(scdata) <- "RNA"
+  Seurat::DefaultAssay(scdata_sketches) <- "RNA"
 
   # remove cell cycle genes if needed
   if (length(exclude_groups) > 0) {
@@ -147,7 +168,9 @@ run_dataIntegration <- function(scdata, config) {
   }
 
   integration_function <- get(paste0("run_", method))
-  scdata <- integration_function(scdata, config)
+  scdata_int <- integration_function(scdata_sketches, config)
+
+  scdata <- learn_from_sketches(scdata, scdata_sketches, scdata_int)
 
   if (is.null(npcs)) {
     npcs <- get_npcs(scdata)
@@ -577,4 +600,26 @@ generate_elbow_plot_data <- function(scdata_integrated, config, task_name, var_e
   plots[generate_gui_uuid("", task_name, 1)] <- list(plot2_data)
 
   return(plots)
+}
+
+
+perform_geomsketch <- function(scdata) {
+  scdata <- Seurat::FindVariableFeatures(scdata, assay = "RNA", nfeatures = 2000, verbose = FALSE)
+  scdata <- Seurat::ScaleData(scdata, verbose = FALSE)
+  scdata <- Seurat::RunPCA(scdata, verbose = FALSE)
+  scdata_sketches <- Geosketch(object = scdata, reduction = "pca", dims = 50, num.cells = round(ncol(scdata)/2))
+  return(scdata_sketches)
+}
+
+Geosketch <- function(object, reduction, dims, num.cells) {
+  if(!exists("geosketch")) {
+    geosketch <- reticulate::import("geosketch")
+  }
+  stopifnot(reduction %in% names(object@reductions))
+  stopifnot(ncol(object@reductions[[reduction]]) >= dims)
+
+  embeddings <- object@reductions[[reduction]]@cell.embeddings[, 1:dims]
+  index <- unlist(geosketch$gs(embeddings, as.integer(num.cells),  one_indexed = TRUE))
+  sketch <- object[, index]
+  return(sketch)
 }
