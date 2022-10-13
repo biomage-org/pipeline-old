@@ -1,9 +1,3 @@
-library(mockery)
-library(withr)
-library(testthat)
-library(zeallot)
-library(tryCatchLog)
-
 stub_s3_list_objects <- function(Bucket, Prefix) {
 
   # this workaround is the lesser evil ("bucket/./project/sample")
