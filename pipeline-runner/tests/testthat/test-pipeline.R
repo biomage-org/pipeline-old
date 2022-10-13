@@ -4,42 +4,6 @@ library(testthat)
 library(zeallot)
 library(tryCatchLog)
 
-
-# stub_pipeline_error_handler <- function(e) {
-#   print("this error is gracefully handled")
-#   print(e)
-#   stop()
-# }
-#
-# stub_get_activity_task <- function(activityArn, workerName) {
-#
-#   print("stubbin'")
-#
-#   json_str <- paste(readLines("./tests/testthat/mock_data/input/input.json"), collapse="")
-#
-#   return(list("mock_token", json_str))
-# }
-#
-# stub_remove_cell_ids <- function(pipeline_config, experiment_id) {
-#   print("\nnot removing bucket\n")
-#   return(NULL)
-# }
-#
-# test_that("run a single pipeline step", {
-#   local_envvar(list("ACTIVITY_ARN" = "test_arn",
-#                     "DEBUG_PATH" = "./debug",
-#                     "DEBUG_STEP" = ""))
-#
-#   mockery::stub(init, "pipeline_error_handler", stub_pipeline_error_handler)
-#   mockery::stub(init, "states$get_activity_task", stub_get_activity_task, depth = 2)
-#   mockery::stub(call_gem2s, "remove_cell_ids", stub_remove_cell_ids)
-#
-#   init()
-# })
-
-
-#################
-
 stub_s3_list_objects <- function(Bucket, Prefix) {
 
   # this workaround is the lesser evil ("bucket/./project/sample")
@@ -94,7 +58,9 @@ stubbed_download_user_files <- function(input, pipeline_config, prev_out = list(
   res
 }
 
+stub_put_object_in_s3 <- function(pipeline_config, bucket, object, key){
 
+}
 
 
 test_that("gem2s-1 - donwload files downloads 10x files", {
