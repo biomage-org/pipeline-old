@@ -118,217 +118,309 @@ mock_pipeline_config <- function(development_aws_server = "mock_aws_server") {
 }
 
 
-test_that("gem2s-1 - donwload files downloads 10x files", {
+# test_that("gem2s-1 - donwload files downloads 10x files", {
+#   base_path <- ifelse(basename(getwd()) == "pipeline-runner",
+#                       "./tests/testthat",
+#                       ".")
+#
+#   mock_path <- file.path(base_path,
+#                          "mock_data")
+#
+#   input <-
+#     RJSONIO::fromJSON(file.path(mock_path, "input/input.json"))
+#
+#   pipeline_config <- mock_pipeline_config()
+#
+#   res <- stubbed_download_user_files(input, pipeline_config)
+#
+#   for (sample in dir("./input", full.names = T)) {
+#     for (file in dir(sample, full.names = T)) {
+#       expect_snapshot_file(file,
+#                            name = paste(basename(sample),
+#                                         basename(file), sep = "-"))
+#     }
+#   }
+#   out_path <- file.path(base_path, "out.rds")
+#
+#   saveRDS(res, out_path)
+#   expect_snapshot_file(out_path, name = paste("gem2s-1", basename(out_path), sep = "-"))
+#   defer_parent(unlink(out_path))
+#
+# })
+#
+#
+# test_that("gem2s-2 - load_user_files loads mocked files", {
+#   base_path <- ifelse(basename(getwd()) == "pipeline-runner",
+#                       "./tests/testthat",
+#                       ".")
+#
+#   mock_path <- file.path(base_path,
+#                          "mock_data")
+#
+#   input <-
+#     RJSONIO::fromJSON(file.path(mock_path, "input/input.json"))
+#
+#   prev_out <-
+#     readRDS(file.path(base_path, "_snaps/pipeline", "gem2s-1-out.rds"))
+#   prev_out <- prev_out$output
+#
+#   experiment_path <- file.path(base_path, prev_out$config$name)
+#   local_file(experiment_path)
+#   dir.create(experiment_path)
+#
+#   for (sample_id in prev_out$config$samples) {
+#     dir.create(file.path(experiment_path, sample_id))
+#     for (sample_file in dir(
+#       file.path(base_path, "_snaps/pipeline"),
+#       pattern = sample_id,
+#       full.names = TRUE
+#     )) {
+#       sample_file_name <-
+#         file.path(experiment_path, sample_id, gsub(paste0(sample_id, "-"), "", basename(sample_file)))
+#       file.copy(sample_file, sample_file_name)
+#     }
+#   }
+#
+#   res <-
+#     load_user_files(input, NULL, prev_out, input_dir = experiment_path)
+#
+#   out_path <- file.path(base_path, "out.rds")
+#   saveRDS(res, out_path)
+#   expect_snapshot_file(out_path, name = paste("gem2s-2", basename(out_path), sep = "-"))
+#   defer_parent(unlink(out_path))
+#
+# })
+#
+#
+# test_that("gem2s-3 - runs empty drops", {
+#   base_path <- ifelse(basename(getwd()) == "pipeline-runner",
+#                       "./tests/testthat",
+#                       ".")
+#
+#   mock_path <- file.path(base_path,
+#                          "mock_data")
+#
+#   input <-
+#     RJSONIO::fromJSON(file.path(mock_path, "input/input.json"))
+#
+#   prev_out <-
+#     readRDS(file.path(base_path, "_snaps/pipeline", "gem2s-2-out.rds"))
+#   prev_out <- prev_out$output
+#
+#   res <- run_emptydrops(input, NULL, prev_out)
+#   out_path <- file.path(base_path, "out.rds")
+#   saveRDS(res, out_path)
+#   expect_snapshot_file(out_path, name = paste("gem2s-3", basename(out_path), sep = "-"))
+#   defer_parent(unlink(out_path))
+#
+# })
+#
+#
+# test_that("gem2s-4 - scores doublets", {
+#   base_path <- ifelse(basename(getwd()) == "pipeline-runner",
+#                       "./tests/testthat",
+#                       ".")
+#
+#   mock_path <- file.path(base_path,
+#                          "mock_data")
+#
+#   input <-
+#     RJSONIO::fromJSON(file.path(mock_path, "input/input.json"))
+#
+#   prev_out <-
+#     readRDS(file.path(base_path, "_snaps/pipeline", "gem2s-3-out.rds"))
+#   prev_out <- prev_out$output
+#
+#   res <- score_doublets(input, NULL, prev_out)
+#   out_path <- file.path(base_path, "out.rds")
+#   saveRDS(res, out_path)
+#   expect_snapshot_file(out_path, name = paste("gem2s-4", basename(out_path), sep = "-"))
+#   defer_parent(unlink(out_path))
+#
+# })
+#
+#
+#
+# test_that("gem2s-5 - creates seurat objects", {
+#   base_path <- ifelse(basename(getwd()) == "pipeline-runner",
+#                       "./tests/testthat",
+#                       ".")
+#
+#   mock_path <- file.path(base_path,
+#                          "mock_data")
+#
+#   input <-
+#     RJSONIO::fromJSON(file.path(mock_path, "input/input.json"))
+#
+#   prev_out <-
+#     readRDS(file.path(base_path, "_snaps/pipeline", "gem2s-4-out.rds"))
+#   prev_out <- prev_out$output
+#
+#   res <- create_seurat(input, NULL, prev_out)
+#   out_path <- file.path(base_path, "out.rds")
+#   saveRDS(res, out_path)
+#   expect_snapshot_file(out_path, name = paste("gem2s-5", basename(out_path), sep = "-"))
+#   defer_parent(unlink(out_path))
+#
+# })
+#
+#
+# test_that("gem2s-6 - prepares experiment", {
+#   base_path <- ifelse(basename(getwd()) == "pipeline-runner",
+#                       "./tests/testthat",
+#                       ".")
+#
+#   mock_path <- file.path(base_path,
+#                          "mock_data")
+#
+#   input <-
+#     RJSONIO::fromJSON(file.path(mock_path, "input/input.json"))
+#
+#   prev_out <-
+#     readRDS(file.path(base_path, "_snaps/pipeline", "gem2s-5-out.rds"))
+#   prev_out <- prev_out$output
+#
+#   res <- prepare_experiment(input, NULL, prev_out)
+#   out_path <- file.path(base_path, "out.rds")
+#   saveRDS(res, out_path)
+#   expect_snapshot_file(out_path, name = paste("gem2s-6", basename(out_path), sep = "-"))
+#   defer_parent(unlink(out_path))
+#
+# })
+#
+#
+# test_that("gem2s-7 - creates cellsets and uploads to AWS", {
+#   base_path <- ifelse(basename(getwd()) == "pipeline-runner",
+#                       "./tests/testthat",
+#                       ".")
+#
+#   mock_path <- file.path(base_path,
+#                          "mock_data")
+#
+#   input <-
+#     RJSONIO::fromJSON(file.path(mock_path, "input/input.json"))
+#
+#   pipeline_config <- mock_pipeline_config()
+#   prev_out <-
+#     readRDS(file.path(base_path, "_snaps/pipeline", "gem2s-6-out.rds"))
+#   prev_out <- prev_out$output
+#
+#   res <- stubbed_upload_to_aws(input, pipeline_config, prev_out)
+#
+#   # cellsets file
+#   expect_snapshot_file(
+#     file.path(pipeline_config$cell_sets_bucket, input$experimentId),
+#     name = paste("gem2s-7", input$experimentId, "cellsets.json", sep = "-")
+#   )
+#   withr::defer(unlink(pipeline_config$cell_sets_bucket, recursive = TRUE),
+#                envir = parent.frame())
+#
+#   # raw sample seurat objects
+#   for (sample_id in prev_out$config$samples) {
+#     expect_snapshot_file(
+#       file.path(
+#         pipeline_config$source_bucket,
+#         input$experimentId,
+#         sample_id,
+#         "r.rds"
+#       ),
+#       name = paste("gem2s-7", input$experimentId, sample_id, "r.rds", sep = "-")
+#     )
+#   }
+#   withr::defer(unlink(pipeline_config$source_bucket, recursive = T))
+#   withr::defer(unlink(file.path(mock_path, "temp"), recursive = T))
+#
+# })
+
+
+###########
+
+test_that("qc-0 generates fitlered cells_id list", {
   base_path <- ifelse(basename(getwd()) == "pipeline-runner",
                       "./tests/testthat",
                       ".")
 
   mock_path <- file.path(base_path,
                          "mock_data")
-
-  input <-
-    RJSONIO::fromJSON(file.path(mock_path, "input/input.json"))
 
   pipeline_config <- mock_pipeline_config()
 
-  res <- stubbed_download_user_files(input, pipeline_config)
-
-  for (sample in dir("./input", full.names = T)) {
-    for (file in dir(sample, full.names = T)) {
-      expect_snapshot_file(file,
-                           name = paste(basename(sample),
-                                        basename(file), sep = "-"))
-    }
-  }
-  out_path <- file.path(base_path, "out.rds")
-
-  saveRDS(res, out_path)
-  expect_snapshot_file(out_path, name = paste("gem2s-1", basename(out_path), sep = "-"))
-  defer_parent(unlink(out_path))
-
-})
-
-
-test_that("gem2s-2 - load_user_files loads mocked files", {
-  base_path <- ifelse(basename(getwd()) == "pipeline-runner",
-                      "./tests/testthat",
-                      ".")
-
-  mock_path <- file.path(base_path,
-                         "mock_data")
-
-  input <-
-    RJSONIO::fromJSON(file.path(mock_path, "input/input.json"))
-
-  prev_out <-
-    readRDS(file.path(base_path, "_snaps/pipeline", "gem2s-1-out.rds"))
-  prev_out <- prev_out$output
-
-  experiment_path <- file.path(base_path, prev_out$config$name)
-  local_file(experiment_path)
-  dir.create(experiment_path)
-
-  for (sample_id in prev_out$config$samples) {
-    dir.create(file.path(experiment_path, sample_id))
-    for (sample_file in dir(
-      file.path(base_path, "_snaps/pipeline"),
-      pattern = sample_id,
-      full.names = TRUE
-    )) {
-      sample_file_name <-
-        file.path(experiment_path, sample_id, gsub(paste0(sample_id, "-"), "", basename(sample_file)))
-      file.copy(sample_file, sample_file_name)
-    }
-  }
-
-  res <-
-    load_user_files(input, NULL, prev_out, input_dir = experiment_path)
-
-  out_path <- file.path(base_path, "out.rds")
-  saveRDS(res, out_path)
-  expect_snapshot_file(out_path, name = paste("gem2s-2", basename(out_path), sep = "-"))
-  defer_parent(unlink(out_path))
-
-})
-
-
-test_that("gem2s-3 - runs empty drops", {
-  base_path <- ifelse(basename(getwd()) == "pipeline-runner",
-                      "./tests/testthat",
-                      ".")
-
-  mock_path <- file.path(base_path,
-                         "mock_data")
-
-  input <-
-    RJSONIO::fromJSON(file.path(mock_path, "input/input.json"))
-
-  prev_out <-
-    readRDS(file.path(base_path, "_snaps/pipeline", "gem2s-2-out.rds"))
-  prev_out <- prev_out$output
-
-  res <- run_emptydrops(input, NULL, prev_out)
-  out_path <- file.path(base_path, "out.rds")
-  saveRDS(res, out_path)
-  expect_snapshot_file(out_path, name = paste("gem2s-3", basename(out_path), sep = "-"))
-  defer_parent(unlink(out_path))
-
-})
-
-
-test_that("gem2s-4 - scores doublets", {
-  base_path <- ifelse(basename(getwd()) == "pipeline-runner",
-                      "./tests/testthat",
-                      ".")
-
-  mock_path <- file.path(base_path,
-                         "mock_data")
-
-  input <-
-    RJSONIO::fromJSON(file.path(mock_path, "input/input.json"))
-
-  prev_out <-
-    readRDS(file.path(base_path, "_snaps/pipeline", "gem2s-3-out.rds"))
-  prev_out <- prev_out$output
-
-  res <- score_doublets(input, NULL, prev_out)
-  out_path <- file.path(base_path, "out.rds")
-  saveRDS(res, out_path)
-  expect_snapshot_file(out_path, name = paste("gem2s-4", basename(out_path), sep = "-"))
-  defer_parent(unlink(out_path))
-
-})
-
-
-
-test_that("gem2s-5 - creates seurat objects", {
-  base_path <- ifelse(basename(getwd()) == "pipeline-runner",
-                      "./tests/testthat",
-                      ".")
-
-  mock_path <- file.path(base_path,
-                         "mock_data")
-
-  input <-
-    RJSONIO::fromJSON(file.path(mock_path, "input/input.json"))
-
-  prev_out <-
-    readRDS(file.path(base_path, "_snaps/pipeline", "gem2s-4-out.rds"))
-  prev_out <- prev_out$output
-
-  res <- create_seurat(input, NULL, prev_out)
-  out_path <- file.path(base_path, "out.rds")
-  saveRDS(res, out_path)
-  expect_snapshot_file(out_path, name = paste("gem2s-5", basename(out_path), sep = "-"))
-  defer_parent(unlink(out_path))
-
-})
-
-
-test_that("gem2s-6 - prepares experiment", {
-  base_path <- ifelse(basename(getwd()) == "pipeline-runner",
-                      "./tests/testthat",
-                      ".")
-
-  mock_path <- file.path(base_path,
-                         "mock_data")
-
-  input <-
-    RJSONIO::fromJSON(file.path(mock_path, "input/input.json"))
-
-  prev_out <-
-    readRDS(file.path(base_path, "_snaps/pipeline", "gem2s-5-out.rds"))
-  prev_out <- prev_out$output
-
-  res <- prepare_experiment(input, NULL, prev_out)
-  out_path <- file.path(base_path, "out.rds")
-  saveRDS(res, out_path)
-  expect_snapshot_file(out_path, name = paste("gem2s-6", basename(out_path), sep = "-"))
-  defer_parent(unlink(out_path))
-
-})
-
-
-test_that("gem2s-7 - creates cellsets and uploads to AWS", {
-  base_path <- ifelse(basename(getwd()) == "pipeline-runner",
-                      "./tests/testthat",
-                      ".")
-
-  mock_path <- file.path(base_path,
-                         "mock_data")
-
-  input <-
-    RJSONIO::fromJSON(file.path(mock_path, "input/input.json"))
-
-  pipeline_config <- mock_pipeline_config()
   prev_out <-
     readRDS(file.path(base_path, "_snaps/pipeline", "gem2s-6-out.rds"))
+
+  filtered_cells_id <- generate_first_step_ids(prev_out$output$scdata_list)
+
+  experiment_id <- prev_out$output$scdata_list[[1]]@misc$experimentId
+
+  withr::with_tempfile("tf", {
+    saveRDS(filtered_cells_id, tf)
+    expect_snapshot_file(tf, name = paste("qc-0", experiment_id, "filtered_cells.rds", sep = "-"))
+  })
+
+})
+
+
+test_that("qc-1 filters empty drops",{
+
+  task_name <- "classifier"
+
+  base_path <- ifelse(basename(getwd()) == "pipeline-runner",
+                      "./tests/testthat",
+                      ".")
+
+  mock_path <- file.path(base_path,
+                         "mock_data")
+
+  pipeline_config <- mock_pipeline_config()
+
+  prev_out <-
+    readRDS(file.path(base_path, "_snaps/pipeline", "gem2s-6-out.rds"))
+
   prev_out <- prev_out$output
 
-  res <- stubbed_upload_to_aws(input, pipeline_config, prev_out)
+  scdata_list <- prev_out$scdata_list
+  config <- prev_out$qc_config[[task_name]]
+  experiment_id <- prev_out$scdata_list[[1]]@misc$experimentId
 
-  # cellsets file
-  expect_snapshot_file(
-    file.path(pipeline_config$cell_sets_bucket, input$experimentId),
-    name = paste("gem2s-7", input$experimentId, "cellsets.json", sep = "-")
-  )
-  withr::defer(unlink(pipeline_config$cell_sets_bucket, recursive = TRUE),
-               envir = parent.frame())
 
-  # raw sample seurat objects
-  for (sample_id in prev_out$config$samples) {
-    expect_snapshot_file(
-      file.path(
-        pipeline_config$source_bucket,
-        input$experimentId,
-        sample_id,
-        "r.rds"
-      ),
-      name = paste("gem2s-7", input$experimentId, sample_id, "r.rds", sep = "-")
-    )
+  cells_id <-
+    readRDS(file.path(
+      base_path,
+      "_snaps/pipeline",
+      paste("qc-0", experiment_id, "filtered_cells.rds", sep = "-")
+    ))
+
+  guidata <- list()
+  out_config <- list()
+  out_data <- list()
+  for (sample_id in names(scdata_list)) {
+    res <- filter_emptydrops(scdata_list, config[[sample_id]], sample_id, cells_id)
+    out_data[[sample_id]] <- res$data
+    cells_id[[sample_id]] <- res$new_ids
+    guidata[[sample_id]] <- res$plotData
+    out_config[[sample_id]] <- res$config
   }
-  withr::defer(unlink(pipeline_config$source_bucket, recursive = T))
-  withr::defer(unlink(file.path(mock_path, "temp"), recursive = T))
 
+  # scdata_list is returned for every sample, so we'll have duplicated stuff here.
+  withr::with_tempfile("temp_out_data", {
+    saveRDS(out_data, temp_out_data)
+    expect_snapshot_file(temp_out_data, name = paste("qc-1", experiment_id, "out_data.rds", sep = "-"))
+  })
+
+  # filtered cells are saved as a global variable and overwritten in each pipeline step
+  withr::with_tempfile("temp_cells_id", {
+    saveRDS(cells_id, temp_cells_id)
+    expect_snapshot_file(temp_cells_id, name = paste("qc-1", experiment_id, "filtered_cells.rds", sep = "-"))
+  })
+
+  withr::with_tempfile("temp_guidata", {
+    saveRDS(guidata, temp_guidata)
+    expect_snapshot_file(temp_guidata, name = paste("qc-1", experiment_id, "guidata.rds", sep = "-"))
+  })
+
+  withr::with_tempfile("temp_out_config", {
+    saveRDS(out_config, temp_out_config)
+    expect_snapshot_file(temp_out_config, name = paste("qc-1", experiment_id, "out_config.rds", sep = "-"))
+  })
 
 })
