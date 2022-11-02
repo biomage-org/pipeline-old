@@ -11,6 +11,8 @@ mock_req <- function(type = "louvain") {
                 ))
 }
 
+# added a random comment in a random file
+
 mock_scdata <- function() {
   data("pbmc_small", package = "SeuratObject", envir = environment())
   pbmc_small$cells_id <- 0:(ncol(pbmc_small) - 1)
