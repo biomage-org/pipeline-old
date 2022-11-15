@@ -21,7 +21,7 @@
 #' between the number of genes and the number of UMIs/molecules.
 #'
 #' @param config list containing the following information
-#'          - enable: true/false. Referring to apply or not the filter.
+#'          - enabled: true/false. Referring to apply or not the filter.
 #'          - auto: true/false. 'True' indicates that the filter setting need to be changed depending on some sensible value (it requires
 #'          to call generate_default_values_numGenesVsNumUmis)
 #'          - filterSettings: slot with thresholds
@@ -102,7 +102,6 @@ filter_gene_umi_outlier <- function(scdata_list, config, sample_id, cells_id, ta
   # get evenly spaced predictions on downsampled data for plotting lines
   xrange <- range(downsampled_data$log_molecules)
   newdata <- data.frame(log_molecules = seq(xrange[1], xrange[2], length.out = 10))
-  line_preds <- suppressWarnings(predict(fit, newdata, interval = "prediction", level = 1 - p_level))
 
   line_preds <- suppressWarnings(predict(fit, newdata, interval = "prediction", level = 1 - p_level))
 
