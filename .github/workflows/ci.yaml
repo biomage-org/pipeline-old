@@ -188,7 +188,7 @@ jobs:
         name: Build Docker image
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: "{{defaultContext}}:pipeline-runner"
           file: ./Dockerfile
           platforms: linux/amd64
           tags: ${{ format('{0}/{1}:{2}-{3}', steps.login-ecr.outputs.registry, steps.ref.outputs.repo-name, steps.ref.outputs.image-tag, matrix.project) }}
