@@ -218,9 +218,6 @@ jobs:
       - id: push
         name: Push docker images to ECR
         run: |-
-          echo Pushing image $IMAGE_NAME-builder to ECR.
-          docker push $IMAGE_NAME-builder
-
           echo Pushing image $IMAGE_NAME to ECR.
           docker push $IMAGE_NAME
         env:
