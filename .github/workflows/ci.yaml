@@ -192,7 +192,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64
           tags: ${{ format('{0}/{1}:{2}-{3}', steps.login-ecr.outputs.registry, steps.ref.outputs.repo-name, steps.ref.outputs.image-tag, matrix.project) }}
-          cache-from: type=gha
+          cache-from: type=gha,scope=pipeline-builder
           cache-to: type=gha,mode=max,scope=pipeline-builder
           push: false
           load: true
