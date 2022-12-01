@@ -1,4 +1,4 @@
-# TESTING FLUX V2 IMAGE UPDATE
+# TESTING FLUX V2 IMAGE UPDATE - UPDATED
 
 # Download the file and stores the output in a file
 download_and_store <- function(bucket, key, file_path, s3) {
