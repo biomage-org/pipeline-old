@@ -9,6 +9,9 @@
 #' to the full data.
 #'
 #' @param config list containing the following information
+#'    - downsampling (may not exist, depending on user interaction)
+#'      - method: string. downsampling method.
+#'      - percentageToKeep: float.
 #' 		- dataIntegration
 #' 			- method: String. Method to be used. "harmony by default.
 #' 			- methodSettings: List with the method as key and:
@@ -21,13 +24,18 @@
 #' @return a list with the integrated seurat object, the cell ids, the config and the plot values.
 #' @export
 #'
-integrate_scdata <- function(scdata_list, config, sample_id, cells_id, task_name = "dataIntegration", use_geosketch = FALSE, perc_num_cells = 5) {
+integrate_scdata <- function(scdata_list, config, sample_id, cells_id, task_name = "dataIntegration") {
   # the following operations give different results depending on sample order
   # make sure they are ordered according to their matrices size
   scdata_list <- order_by_size(scdata_list)
   message("Started create_scdata")
   scdata <- create_scdata(scdata_list, cells_id)
   message("Finished create_scdata")
+
+  # check if downsampling params are in the config
+  use_geosketch <-
+    "downsampling" %in% names(config) &&
+    config$downsampling$method == "geosketch"
 
   # main function
   set.seed(RANDOM_SEED)
@@ -36,7 +44,7 @@ integrate_scdata <- function(scdata_list, config, sample_id, cells_id, task_name
     c(scdata, scdata_sketch) %<-% run_geosketch(
       scdata,
       dims = 50,
-      perc_num_cells = perc_num_cells
+      perc_num_cells = config$downsampling$percentageToKeep
     )
   }
 
