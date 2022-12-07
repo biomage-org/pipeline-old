@@ -271,7 +271,7 @@
     Code
       rlang::hash(res)
     Output
-      [1] "2c31159cdfa0c963cf61adb1008b0314"
+      [1] "5ca1dd25a34640b288193b6a6466b3ff"
     Code
       str(res)
     Output
@@ -358,8 +358,8 @@
         .. .. ..$ doublet_scores: num [1:216] 0.337 0.379 0.28 0.741 0.189 ...
         .. ..$ mock_sample_2_id:'data.frame':	242 obs. of  3 variables:
         .. .. ..$ barcodes      : chr [1:242] "TACGGGCGTTATAGCC-1" "AAGACAACATCAACCA-1" "GGACGTCCACTGCTTC-1" "CAGCGTGGTACGATCT-1" ...
-        .. .. ..$ doublet_class : Factor w/ 2 levels "singlet","doublet": 1 1 2 2 1 2 1 2 2 1 ...
-        .. .. ..$ doublet_scores: num [1:242] 0.13 0.295 0.923 0.984 0.406 ...
+        .. .. ..$ doublet_class : Factor w/ 2 levels "singlet","doublet": 1 1 1 1 1 1 1 1 1 1 ...
+        .. .. ..$ doublet_scores: num [1:242] 0.0458 0.5706 0.966 0.5052 0.3721 ...
         ..$ scdata_list       :List of 2
         .. ..$ mock_sample_1_id:Formal class 'Seurat' [package "SeuratObject"] with 13 slots
         .. .. .. ..@ assays      :List of 1
@@ -482,7 +482,7 @@
     Code
       rlang::hash(res)
     Output
-      [1] "12d5b3475f1e6b37176172c2e9b9c298"
+      [1] "988133ae29394ba9af3dcf9c03e0dba7"
     Code
       str(res)
     Output
@@ -569,8 +569,8 @@
         .. .. ..$ doublet_scores: num [1:216] 0.337 0.379 0.28 0.741 0.189 ...
         .. ..$ mock_sample_2_id:'data.frame':	242 obs. of  3 variables:
         .. .. ..$ barcodes      : chr [1:242] "TACGGGCGTTATAGCC-1" "AAGACAACATCAACCA-1" "GGACGTCCACTGCTTC-1" "CAGCGTGGTACGATCT-1" ...
-        .. .. ..$ doublet_class : Factor w/ 2 levels "singlet","doublet": 1 1 2 2 1 2 1 2 2 1 ...
-        .. .. ..$ doublet_scores: num [1:242] 0.13 0.295 0.923 0.984 0.406 ...
+        .. .. ..$ doublet_class : Factor w/ 2 levels "singlet","doublet": 1 1 1 1 1 1 1 1 1 1 ...
+        .. .. ..$ doublet_scores: num [1:242] 0.0458 0.5706 0.966 0.5052 0.3721 ...
         ..$ scdata_list       :List of 2
         .. ..$ mock_sample_2_id:Formal class 'Seurat' [package "SeuratObject"] with 13 slots
         .. .. .. ..@ assays      :List of 1
@@ -1034,4 +1034,3 @@
         .. .. .. .. .. .. ..$ resolution: num 0.8
         ..$ table: NULL
        $ output: list()
-

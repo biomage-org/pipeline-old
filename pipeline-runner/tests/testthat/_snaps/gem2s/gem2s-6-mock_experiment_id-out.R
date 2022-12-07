@@ -49786,11 +49786,11 @@ list(data = list(), output = list(config = list(name = "mock_experiment",
                   regressionTypeSettings = list(linear = list(
                     p.level = 0.001), spline = list(p.level = 0.001))))), 
         doubletScores = list(mock_sample_2_id = list(enabled = TRUE, 
-            auto = TRUE, filterSettings = list(probabilityThreshold = 0.80473941564559937, 
+            auto = TRUE, filterSettings = list(probabilityThreshold = 0.97920405864715576, 
                 binStep = 0.02), defaultFilterSettings = list(
-                probabilityThreshold = 0.80473941564559937, binStep = 0.02)), 
+                probabilityThreshold = 0.97920405864715576, binStep = 0.02)), 
             mock_sample_1_id = list(enabled = TRUE, auto = TRUE, 
-                filterSettings = list(probabilityThreshold = 0.86538296937942505, 
+                filterSettings = list(probabilityThreshold = 0.83960545063018799, 
                   binStep = 0.02), defaultFilterSettings = list(
                   probabilityThreshold = 0.86538296937942505, 
                   binStep = 0.02))), dataIntegration = list(dataIntegration = list(
