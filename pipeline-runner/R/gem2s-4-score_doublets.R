@@ -39,6 +39,7 @@ score_doublets <- function(input, pipeline_config, prev_out) {
       sample_counts <- sample_counts[, ntot > (200 * attempt)]
       try({
         scores[[sample]] <- compute_sample_doublet_scores(sample_counts)
+        r <- "not null"
       })
       attempt <- attempt + 1
     }
