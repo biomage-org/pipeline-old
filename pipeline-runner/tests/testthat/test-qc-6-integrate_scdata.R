@@ -544,9 +544,10 @@ test_that("run_geosketch generates the correct number of sketches", {
       method = "harmony",
       methodSettings = list(harmony = list(
         numGenes = 10, normalisation = "logNormalize"
-      )),
-      downsampling = list(method = "geosketch", percentageToKeep = 5)
-    )
+      ))
+    ),
+    downsampling = list(method = "geosketch", percentageToKeep = 5)
+
   )
 
   merged_scdata <- run_pca(merged_scdata)
