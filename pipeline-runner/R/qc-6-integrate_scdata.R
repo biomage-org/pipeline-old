@@ -69,6 +69,87 @@ integrate_scdata <- function(scdata_list, config, sample_id, cells_id, task_name
   return(result)
 }
 
+integrate_seurat <- function(scdata_list, config, sample_id, cells_id, task_name = "dataIntegration", use_geosketch = FALSE, perc_num_cells = 5) {
+  # the following operations give different results depending on sample order
+  # make sure they are ordered according to their matrices size
+  scdata_list <- order_by_size(scdata_list)
+
+  # main function
+  set.seed(RANDOM_SEED)
+  scdata_sketch <- NA
+  if (use_geosketch) {
+    c(scdata, scdata_sketch) %<-% run_geosketch(
+      scdata,
+      dims = 50,
+      perc_num_cells = perc_num_cells
+    )
+  }
+
+  message("Started data integration")
+  # get method and settings
+  method <- config$dataIntegration$method
+  npcs <- config$dimensionalityReduction$numPCs
+
+  exclude_groups <- config$dimensionalityReduction$excludeGeneCategories
+
+
+  nsamples <- length(scdata_list)
+  if (nsamples == 1) {
+    method <- "unisample"
+    message("Only one sample detected or method is non integrate.")
+  }
+
+  # we need RNA assay to compute the integrated matrix
+  # Seurat::DefaultAssay(scdata) <- "RNA"
+
+  # remove cell cycle genes if needed
+  # if (length(exclude_groups) > 0) {
+  #   message("\n------\n")
+  #   scdata <- remove_genes(scdata, exclude_groups)
+  #   message("\n------\n")
+  # }
+
+
+  # if (is.na(scdata_sketch)) {
+  scdata <- run_seuratv4(scdata_list, config, npcs)
+  # } else {
+  #   scdata <- integrate_from_sketch(scdata, scdata_sketch, integration_function, config, npcs)
+  # }
+
+  if (is.null(npcs)) {
+    npcs <- get_npcs(scdata)
+    message("Number of PCs: ", npcs)
+  }
+
+  # Compute embedding with default setting to get an overview of the performance of the batch correction
+  scdata <- Seurat::RunUMAP(scdata, reduction = scdata@misc[["active.reduction"]], dims = 1:npcs, verbose = FALSE)
+  message("Finished data integration")
+
+  # get  npcs from the UMAP call in integration functions
+  npcs <- length(scdata_integrated@commands$RunUMAP@params$dims)
+  message("\nSet config numPCs to npcs used in last UMAP call: ", npcs, "\n")
+  config$dimensionalityReduction$numPCs <- npcs
+
+  var_explained <- get_explained_variance(scdata_integrated)
+
+  # This same numPCs will be used throughout the platform.
+  scdata_integrated@misc[["numPCs"]] <- config$dimensionalityReduction$numPCs
+
+  scdata_integrated <- colorObject(scdata_integrated)
+
+  plots <- generate_elbow_plot_data(scdata_integrated, config, task_name, var_explained)
+
+  # the result object will have to conform to this format: {data, config, plotData : {plot1, plot2}}
+  result <- list(
+    data = scdata_integrated,
+    new_ids = cells_id,
+    config = config,
+    plotData = plots
+  )
+
+  return(result)
+}
+
 
 #' Create the merged Seurat object
 #'
@@ -197,7 +278,7 @@ run_harmony <- function(scdata, config, npcs) {
   return(scdata)
 }
 
-run_seuratv4 <- function(scdata, config, npcs) {
+run_seuratv4 <- function(scdata_list, config, npcs) {
   settings <- config$dataIntegration$methodSettings[["seuratv4"]]
 
   nfeatures <- settings$numGenes
@@ -211,9 +292,10 @@ run_seuratv4 <- function(scdata, config, npcs) {
   if (grepl("lognorm", normalization, ignore.case = TRUE)) normalization <- "LogNormalize"
 
   # @misc slots not preserved so transfer
-  misc <- scdata@misc
+  misc <- scdata_list[[1]]@misc
 
-  data.split <- Seurat::SplitObject(scdata, split.by = "samples")
+  # data.split <- Seurat::SplitObject(scdata, split.by = "samples")
+  data.split <- scdata_list
   for (i in 1:length(data.split)) {
     data.split[[i]] <- normalize_data(data.split[[i]], normalization, "seuratv4", nfeatures)
     # PCA needs to be run also here
