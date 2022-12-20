@@ -9,6 +9,13 @@
     spec:
       restartPolicy: Always
       serviceAccountName: 'deployment-runner'
+      tolerations:
+      - key: "size"
+        operator: "Equal"
+        value: "xl"
+        effect: "NoExecute"
+      nodeSelector:
+        size: xl
       containers:
       - name: "{{ .Release.Name }}"
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
