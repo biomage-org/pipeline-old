@@ -44,11 +44,11 @@ RUN R -q -e "renv::restore(lockfile='renv.lock', library = '$RENV_LIB', clean = 
 
 # install miniconda and geosketch
 # clean conda
-ENV RETICULATE_MINICONDA_PATH=/src/r-miniconda
-RUN R -q -e "reticulate::install_miniconda()" && \
-    R -q -e "reticulate::conda_install('r-reticulate', c('geosketch', 'scanorama'), pip = TRUE)" && \
-    CONDA_PATH=$(R -q -s -e "cat(reticulate::conda_binary())") && \
-    $CONDA_PATH clean --force-pkgs-dirs -y
+#ENV RETICULATE_MINICONDA_PATH=/src/r-miniconda
+#RUN R -q -e "reticulate::install_miniconda()" && \
+#    R -q -e "reticulate::conda_install('r-reticulate', c('geosketch', 'scanorama'), pip = TRUE)" && \
+#    CONDA_PATH=$(R -q -s -e "cat(reticulate::conda_binary())") && \
+#    $CONDA_PATH clean --force-pkgs-dirs -y
 
 # determine system run-time deps
 COPY setup/get_sysdeps_run.R .

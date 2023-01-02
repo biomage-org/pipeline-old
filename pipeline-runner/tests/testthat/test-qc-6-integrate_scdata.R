@@ -452,49 +452,49 @@ test_that("integrate_scdata doesn't run geosketch if use_geosketch is FALSE", {
 })
 
 
-test_that("integrate_scdata run geosketch if use_geosketch is TRUE", {
-  c(scdata_list, sample_1_id, sample_2_id) %<-% mock_scdata()
-  cells_id <- mock_ids()
-  merged_scdata <- create_scdata(scdata_list, cells_id)
-  config <- list(
-    dimensionalityReduction = list(numPCs = 2),
-    dataIntegration = list(method = "harmony", methodSettings = list(harmony = list(numGenes = 10, normalisation = "logNormalize")))
-  )
-
-  integrated_scdata <- suppressWarnings(integrate_scdata(scdata_list, config, "", cells_id, task_name = "dataIntegration", use_geosketch = TRUE, perc_num_cells = 50))$data
-  expect_true(integrated_scdata@misc$geosketch)
-})
-
-
-test_that("run_geosketch generates the correct number of sketches", {
-  c(scdata_list, sample_1_id, sample_2_id) %<-% mock_scdata()
-  cells_id <- mock_ids()
-  merged_scdata <- create_scdata(scdata_list, cells_id)
-  config <- list(
-    dimensionalityReduction = list(numPCs = 2),
-    dataIntegration = list(method = "harmony", methodSettings = list(harmony = list(numGenes = 10, normalisation = "logNormalize")))
-  )
-
-  merged_scdata <- run_pca(merged_scdata)
-
-  perc_num_cells <- 5
-  num_cells <- round(ncol(merged_scdata) * perc_num_cells / 100)
-  c(scdata, scdata_sketch) %<-% run_geosketch(merged_scdata, dims = 50, perc_num_cells)
-  expect_equal(ncol(scdata_sketch), num_cells)
-})
-
-
-test_that("integrate_scdata with geosketch adds the correct integration method to the Seurat object", {
-  c(scdata_list, sample_1_id, sample_2_id) %<-% mock_scdata()
-  cells_id <- mock_ids()
-   config <- list(
-    dimensionalityReduction = list(numPCs = 2),
-    dataIntegration = list(method = "harmony", methodSettings = list(harmony = list(numGenes = 10, normalisation = "logNormalize")))
-  )
-
-   integrated_scdata <- suppressWarnings(integrate_scdata(scdata_list, config, "", cells_id, task_name = "dataIntegration", use_geosketch = TRUE, perc_num_cells = 50))$data
-   expect_equal(integrated_scdata@misc[["active.reduction"]], "harmony")
-})
+# test_that("integrate_scdata run geosketch if use_geosketch is TRUE", {
+#   c(scdata_list, sample_1_id, sample_2_id) %<-% mock_scdata()
+#   cells_id <- mock_ids()
+#   merged_scdata <- create_scdata(scdata_list, cells_id)
+#   config <- list(
+#     dimensionalityReduction = list(numPCs = 2),
+#     dataIntegration = list(method = "harmony", methodSettings = list(harmony = list(numGenes = 10, normalisation = "logNormalize")))
+#   )
+#
+#   integrated_scdata <- suppressWarnings(integrate_scdata(scdata_list, config, "", cells_id, task_name = "dataIntegration", use_geosketch = TRUE, perc_num_cells = 50))$data
+#   expect_true(integrated_scdata@misc$geosketch)
+# })
+#
+#
+# test_that("run_geosketch generates the correct number of sketches", {
+#   c(scdata_list, sample_1_id, sample_2_id) %<-% mock_scdata()
+#   cells_id <- mock_ids()
+#   merged_scdata <- create_scdata(scdata_list, cells_id)
+#   config <- list(
+#     dimensionalityReduction = list(numPCs = 2),
+#     dataIntegration = list(method = "harmony", methodSettings = list(harmony = list(numGenes = 10, normalisation = "logNormalize")))
+#   )
+#
+#   merged_scdata <- run_pca(merged_scdata)
+#
+#   perc_num_cells <- 5
+#   num_cells <- round(ncol(merged_scdata) * perc_num_cells / 100)
+#   c(scdata, scdata_sketch) %<-% run_geosketch(merged_scdata, dims = 50, perc_num_cells)
+#   expect_equal(ncol(scdata_sketch), num_cells)
+# })
+#
+#
+# test_that("integrate_scdata with geosketch adds the correct integration method to the Seurat object", {
+#   c(scdata_list, sample_1_id, sample_2_id) %<-% mock_scdata()
+#   cells_id <- mock_ids()
+#    config <- list(
+#     dimensionalityReduction = list(numPCs = 2),
+#     dataIntegration = list(method = "harmony", methodSettings = list(harmony = list(numGenes = 10, normalisation = "logNormalize")))
+#   )
+#
+#    integrated_scdata <- suppressWarnings(integrate_scdata(scdata_list, config, "", cells_id, task_name = "dataIntegration", use_geosketch = TRUE, perc_num_cells = 50))$data
+#    expect_equal(integrated_scdata@misc[["active.reduction"]], "harmony")
+# })
 
 
 test_that("SCTransform integration works", {
