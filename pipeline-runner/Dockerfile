@@ -44,7 +44,7 @@ RUN R -q -e "renv::restore(lockfile='renv.lock', library = '$RENV_LIB', clean = 
 
 #ENV RETICULATE_MINICONDA_PATH=/src/r-miniconda
 RUN apt-get update && \
-    apt-get -y install --no-install-recommends git python3.8-venv && \
+    apt-get -y install --no-install-recommends git python3 python3-venv && \
     R -q -e "reticulate::virtualenv_create('r-reticulate')" && \
     R -q -e "reticulate::py_install(c('geosketch', 'scanorama'), method = 'virtualenv', envname = 'r-reticulate')"
 
