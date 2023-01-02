@@ -14,5 +14,5 @@ for (f in list.files("R", ".R$", full.names = TRUE)) {
   source(f, keep.source = TRUE)
 }
 load("R/sysdata.rda") # constants
-
+reticulate::use_virtualenv("r-reticulate", required = TRUE)
 init()

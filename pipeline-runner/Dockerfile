@@ -42,7 +42,7 @@ RUN R -q -e "renv::restore(lockfile='renv.lock', library = '$RENV_LIB', clean = 
     R -q -e 'root <- renv::paths$root(); unlink(root, recursive = TRUE)' && \
     strip --strip-debug $RENV_LIB/*/libs/*.so
 
-#ENV RETICULATE_MINICONDA_PATH=/src/r-miniconda
+ENV WORKON_HOME=/src/.virtualenvs
 RUN apt-get update && \
     apt-get -y install --no-install-recommends git build-essential libssl-dev zlib1g-dev \
     libbz2-dev libreadline-dev libsqlite3-dev curl llvm \
@@ -60,7 +60,7 @@ RUN Rscript get_sysdeps_run.R
 # ---------------------------------------------------
 FROM rocker/r-ver:4.2.0 AS common
 WORKDIR /src/pipeline-runner
-#ENV RETICULATE_MINICONDA_PATH=/src/r-miniconda
+ENV WORKON_HOME=/src/.virtualenvs
 
 # get source code and R packages
 COPY --from=builder /src /src
