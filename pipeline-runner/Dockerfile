@@ -45,8 +45,7 @@ RUN R -q -e "renv::restore(lockfile='renv.lock', library = '$RENV_LIB', clean = 
 #ENV RETICULATE_MINICONDA_PATH=/src/r-miniconda
 RUN apt-get update && \
     apt-get -y install --no-install-recommends git && \
-    R -q -e "reticulate::install_python('3.10:latest')" && \
-    R -q -e "reticulate::virtualenv_create('r-reticulate', version = '3.10:latest')" && \
+    R -q -e "reticulate::virtualenv_create('r-reticulate')" && \
     R -q -e "reticulate::py_install(c('geosketch', 'scanorama'), method = 'virtualenv', envname = 'r-reticulate')"
 
 # determine system run-time deps
