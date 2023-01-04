@@ -22,7 +22,9 @@ Suggests:
     devtools,
     httptest,
     languageserver,
+    pkgbuild,
     roxygen2,
+    sessioninfo,
     styler,
     testthat (>= 3.0.0),
     usethis
