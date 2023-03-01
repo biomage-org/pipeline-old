@@ -132,7 +132,7 @@ FROM common AS dev
 
 # install watchdog to automatically restart
 # when source files change
-RUN pip install -U jedi PyYAML watchdog[watchmedo] memory_profiler && \
+RUN pip3 install -U jedi PyYAML watchdog[watchmedo] memory_profiler && \
     apt update && \
     apt -y install git && \
     rm -rf /var/cache/apt/archives /var/lib/apt/lists/*
