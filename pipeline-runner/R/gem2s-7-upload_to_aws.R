@@ -93,13 +93,14 @@ upload_to_aws <- function(input, pipeline_config, prev_out) {
 #' @export
 #'
 get_cell_sets <- function(scdata_list, input) {
-  scratchpad <- list(
-    key = "scratchpad",
-    name = "Custom cell sets",
-    rootNode = TRUE,
-    children = list(),
-    type = "cellSets"
-  )
+  scratchpad <-
+    make_root_cellset(
+      key = "scratchpad",
+      name = "Custom cell sets",
+      rootNode = TRUE,
+      children = list(),
+      type = "cellSets"
+    )
 
   color_pool <- get_color_pool()
   sample_cellsets <- build_sample_cellsets(input, scdata_list, color_pool)
@@ -127,7 +128,8 @@ get_cell_sets <- function(scdata_list, input) {
 #' @export
 #'
 build_sample_cellsets <- function(input, scdata_list, color_pool) {
-  cell_set <- list(
+
+  cell_set <- make_root_cellset(
     key = "sample",
     name = "Samples",
     rootNode = TRUE,
@@ -142,12 +144,13 @@ build_sample_cellsets <- function(input, scdata_list, color_pool) {
     scdata <- scdata_list[[sample_ids[i]]]
     cell_ids <- scdata$cells_id
 
-    cell_set$children[[i]] <- list(
+    cell_set$children[[i]] <- make_cellset(
       key = sample_ids[i],
       name = sample_names[i],
       color = color_pool[i],
-      cellIds = ensure_is_list_in_json(unname(cell_ids))
+      cellIds = unname(cell_ids)
     )
+
   }
 
   return(cell_set)
@@ -190,12 +193,12 @@ build_metadata_cellsets <- function(input, scdata_list, color_pool, disable_qc_f
     user_metadata_name <- metadata_names[i]
     valid_metadata_name <- valid_metadata_names[i]
 
-    cell_set <- list(
-      "key" = user_metadata_name,
-      "name" = user_metadata_name,
-      "rootNode" = TRUE,
-      "children" = c(),
-      "type" = "metadataCategorical"
+    cell_set <- make_root_cellset(
+      key = user_metadata_name,
+      name = user_metadata_name,
+      rootNode = TRUE,
+      children = list(),
+      type = "metadataCategorical"
     )
 
     # values of current metadata track
@@ -210,12 +213,13 @@ build_metadata_cellsets <- function(input, scdata_list, color_pool, disable_qc_f
         cell_ids <- append(cell_ids, scdata$cells_id[cells_in_value])
       }
 
-      cell_set$children[[j]] <- list(
-        "key" = paste(user_metadata_name, value, sep = "-"),
-        "name" = value,
-        "color" = color_pool[color_index],
-        "cellIds" = unname(cell_ids)
-      )
+      cell_set$children[[j]] <-
+        make_cellset(
+          key = paste(user_metadata_name, value, sep = "-"),
+          name = value,
+          color = color_pool[color_index],
+          unname(cell_ids)
+        )
 
       color_index <- color_index + 1
     }
@@ -312,13 +316,15 @@ get_subset_cell_sets <- function(scdata_list, input, prev_out, disable_qc_filter
     message("adding custom cellsets to subset experiment")
     scratchpad_cellsets <- build_scratchpad_cellsets(color_pool, subset_cellsets)
   } else {
-    scratchpad_cellsets <- list(
-      key = "scratchpad",
-      name = "Custom cell sets",
-      rootNode = TRUE,
-      children = list(),
-      type = "cellSets"
-    )
+    scratchpad_cellsets <-
+      make_root_cellset(
+        key = "scratchpad",
+        name = "Custom cell sets",
+        rootNode = TRUE,
+        children = list(),
+        type = "cellSets"
+      )
+
   }
   cell_sets <- c(cell_sets, list(scratchpad_cellsets))
 
@@ -365,13 +371,15 @@ filter_parent_cellsets <- function(parent_cellsets, cell_ids_to_keep) {
 #' @export
 #'
 build_scratchpad_cellsets <- function(color_pool, subset_cellsets) {
-  scratchpad <- list(
-    key = "scratchpad",
-    name = "Custom cell sets",
-    rootNode = TRUE,
-    children = list(),
-    type = "cellSets"
-  )
+
+  scratchpad <-
+    make_root_cellset(
+      key = "scratchpad",
+      name = "Custom cell sets",
+      rootNode = TRUE,
+      children = list(),
+      type = "cellSets"
+    )
 
   scratchpad_cellsets <- unique(subset_cellsets[type == "scratchpad", .(key, name)], by = "key")
   scratchpad_ids <- scratchpad_cellsets[, key]
@@ -379,13 +387,32 @@ build_scratchpad_cellsets <- function(color_pool, subset_cellsets) {
 
   for (i in seq_along(scratchpad_ids)) {
 
-    scratchpad$children[[i]] <- list(
-      key = scratchpad_ids[i],
-      name = scratchpad_names[i],
-      color = color_pool[i],
-      cellIds =  ensure_is_list_in_json(subset_cellsets[key == scratchpad_ids[i], cell_id])
-    )
+    scratchpad$children[[i]] <-
+      make_cellset(key = scratchpad_ids[i],
+                   name = scratchpad_names[i],
+                   color = color_pool[i],
+                   cellIds = subset_cellsets[key == scratchpad_ids[i], cell_id])
+
   }
 
   return(scratchpad)
+}
+
+
+make_root_cellset <- function(key, name, rootNode, children, type) {
+  list(key = key,
+       name = name,
+       rootNode = rootNode,
+       children = children,
+       type = type)
+}
+
+
+make_cellset <- function(key, name, color, cellIds) {
+  list(
+    key = key,
+    name = name,
+    color = color,
+    cellIds =  ensure_is_list_in_json(cellIds)
+  )
 }
