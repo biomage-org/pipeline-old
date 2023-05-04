@@ -476,7 +476,8 @@ wrapper <- function(input, pipeline_config) {
   task_name <- input$taskName
   message("\n------\nStarting task: ", task_name, "\n")
   message("Input:")
-  str(input)
+  # remove config from print to avoid huge redundant logs
+  str(input[names(input) != "config"])
 
   # common to gem2s and data processing
   server <- input$server
@@ -529,7 +530,6 @@ init <- function() {
 
     # parse data from state machine input
     input <- RJSONIO::fromJSON(input_json, simplify = FALSE)
-
 
     # save logs to file
     debug_prefix <- file.path(input$experimentId, debug_timestamp)
