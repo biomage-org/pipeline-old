@@ -140,8 +140,12 @@ diet_scdata <- function(scdata) {
     min.features = 0
   )
 
+  # remove NA named cols if present
+  annot <- scdata@misc$gene_annotations
+  annot <- annot[!is.na(names(annot))]
+
   lean_scdata@misc <- list(
-    gene_annotations = scdata@misc$gene_annotations,
+    gene_annotations = annot,
     parent_experimentId = scdata@misc$experimentId
   )
 

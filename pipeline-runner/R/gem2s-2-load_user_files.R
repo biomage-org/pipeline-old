@@ -272,6 +272,9 @@ read_10x_annotations <- function(annot_fpath, sample) {
   annot <- annot[, c(1, 2)]
   colnames(annot) <- c("input", "name")
 
+  # remove NA named columns if present
+  annot <- annot[!is.na(names(annot))]
+
   return(list("annot" = annot, "feature_types" = feature_types, "gene_column" = gene_column))
 }
 
@@ -296,6 +299,9 @@ format_annot <- function(annot_list) {
   annot <- annot[!duplicated(annot$input), ]
 
   rownames(annot) <- annot$input
+
+  # remove NA named columns if present
+  annot <- annot[!is.na(names(annot))]
   return(annot)
 }
 
@@ -350,6 +356,10 @@ normalize_annotation_types <- function(annot_list, counts_list, feature_types_li
       else if (feature_types_list[[sample]] == IDS_IDS) {
         sample_annot <- ids_to_sym(sample_annot, annot_with_ids)
       }
+
+      # remove NA named columns if present
+      sample_annot <- sample_annot[!is.na(names(sample_annot))]
+
       annot_list[[sample]] <- sample_annot
     }
   }
