@@ -49,6 +49,11 @@ gem2s <- list(
   max.empty.drops = 50
 )
 
+
+# minimum number of cells required in a sample to have the pipeline not break.
+MIN_CELLS_IN_SAMPLE <- 15
+
+
 RANDOM_SEED <- 42
 
 # path where dump/log files are saved
@@ -68,6 +73,9 @@ file_names <- list(
   matrix10x = "matrix.mtx.gz",
   rhapsody = "expression_data.st.gz"
 )
+
+MITOCHONDRIAL_REGEX <- "^mt[-:]"
+RIBOSOMAL_REGEX <- "^M?RP[LS]|FAU|UBA52|DAP3"
 
 source("data-raw/cell_cycle_genes.R")
 
@@ -96,6 +104,7 @@ usethis::use_data(
   QC_TASK_LIST,
   INPUT_DIR,
   RANDOM_SEED,
+  MIN_CELLS_IN_SAMPLE,
   DEBUG_PATH,
   file_names,
   file_types_by_technology,
@@ -104,6 +113,8 @@ usethis::use_data(
   IDS_SYM,
   IDS_IDS,
   cc_genes,
+  MITOCHONDRIAL_REGEX,
+  RIBOSOMAL_REGEX,
   pipeline_version,
   UNISAMPLE,
   internal = TRUE,
