@@ -219,7 +219,7 @@ build_metadata_cellsets <- function(input, scdata_list, color_pool, disable_qc_f
           key = paste(user_metadata_name, value, sep = "-"),
           name = value,
           color = color_pool[color_index],
-          unname(cell_ids)
+          cellIds = unname(cell_ids)
         )
 
       color_index <- color_index + 1
