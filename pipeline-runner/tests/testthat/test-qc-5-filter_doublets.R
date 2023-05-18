@@ -113,13 +113,13 @@ test_that("filter_doublets can be disabled", {
 })
 
 
-test_that("generate_default_values_doubletScores sets threshold to 0 when there are no singlets", {
+test_that("generate_default_values_doubletScores sets threshold to 1 when there are no singlets", {
   scdata_list <- mock_scdata()
   sample_1_id <- names(scdata_list)[1]
   sample_2_id <- names(scdata_list)[2]
   scdata_list[[1]]$doublet_class <- "doublet"
 
-  expect_equal(generate_default_values_doubletScores(scdata_list[[1]]), 0)
+  expect_equal(generate_default_values_doubletScores(scdata_list[[1]]), 1)
 })
 
 
