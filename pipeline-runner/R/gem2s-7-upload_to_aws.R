@@ -95,7 +95,7 @@ upload_to_aws <- function(input, pipeline_config, prev_out) {
 #'
 get_cell_sets <- function(scdata_list, input) {
   scratchpad <-
-    make_root_cellset(
+    make_cell_class(
       key = "scratchpad",
       name = "Custom cell sets",
       rootNode = TRUE,
@@ -130,7 +130,7 @@ get_cell_sets <- function(scdata_list, input) {
 #'
 build_sample_cellsets <- function(input, scdata_list, color_pool) {
 
-  cell_set <- make_root_cellset(
+  cell_set <- make_cell_class(
     key = "sample",
     name = "Samples",
     rootNode = TRUE,
@@ -194,7 +194,7 @@ build_metadata_cellsets <- function(input, scdata_list, color_pool, disable_qc_f
     user_metadata_name <- metadata_names[i]
     valid_metadata_name <- valid_metadata_names[i]
 
-    cell_set <- make_root_cellset(
+    cell_set <- make_cell_class(
       key = user_metadata_name,
       name = user_metadata_name,
       rootNode = TRUE,
@@ -318,7 +318,7 @@ get_subset_cell_sets <- function(scdata_list, input, prev_out, disable_qc_filter
     scratchpad_cellsets <- build_scratchpad_cellsets(color_pool, subset_cellsets)
   } else {
     scratchpad_cellsets <-
-      make_root_cellset(
+      make_cell_class(
         key = "scratchpad",
         name = "Custom cell sets",
         rootNode = TRUE,
@@ -374,7 +374,7 @@ filter_parent_cellsets <- function(parent_cellsets, cell_ids_to_keep) {
 build_scratchpad_cellsets <- function(color_pool, subset_cellsets) {
 
   scratchpad <-
-    make_root_cellset(
+    make_cell_class(
       key = "scratchpad",
       name = "Custom cell sets",
       rootNode = TRUE,
@@ -400,7 +400,7 @@ build_scratchpad_cellsets <- function(color_pool, subset_cellsets) {
 }
 
 
-make_root_cellset <- function(key, name, rootNode, children, type) {
+make_cell_class <- function(key, name, rootNode, children, type) {
   list(key = key,
        name = name,
        rootNode = rootNode,

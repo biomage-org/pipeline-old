@@ -571,10 +571,10 @@ test_that("build_scratchpad_cellsets builds multiple cellsets", {
 })
 
 
-test_that("make_root_cellset makes correct cellsets", {
+test_that("make_cell_class makes correct cellsets", {
 
   res <-
-    make_root_cellset(
+    make_cell_class(
       key = "a_key",
       name = "cellset_name",
       rootNode = TRUE,
