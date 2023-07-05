@@ -569,3 +569,82 @@ test_that("build_scratchpad_cellsets builds multiple cellsets", {
     expect_setequal(cs$cellIds, subset_cellsets[(type == "scratchpad" & key == cs$key & name == cs$name), cell_id])
   }
 })
+
+
+test_that("make_cell_class makes correct cellsets", {
+
+  res <-
+    make_cell_class(
+      key = "a_key",
+      name = "cellset_name",
+      rootNode = TRUE,
+      children = list(),
+      type = "cellset_type"
+    )
+
+  expected_cellset <- list(
+    key = "a_key",
+    name = "cellset_name",
+    rootNode = TRUE,
+    children = list(),
+    type = "cellset_type"
+  )
+
+  expect_named(res, c("key", "name", "rootNode", "children", "type"))
+  expect_identical(res, expected_cellset)
+
+})
+
+
+test_that("make_cellset makes correct cellsets", {
+  n_cells <- 40
+  res <-
+    make_cellset(
+      key = "a_key",
+      name = "cellset_name",
+      color = "#fafafa",
+      cellIds = 1:n_cells
+    )
+
+  expected_cellset <- list(
+    key = "a_key",
+    name = "cellset_name",
+    color = "#fafafa",
+    cellIds = 1:n_cells
+  )
+
+  expect_named(res, c("key", "name", "color", "cellIds"))
+  expect_equal(length(res$cellIds), n_cells)
+  expect_identical(res, expected_cellset)
+
+})
+
+
+test_that("make_cellset stores cellIds as vector if there is more than 1 cell", {
+  n_cells <- 2
+  res <-
+    make_cellset(
+      key = "a_key",
+      name = "cellset_name",
+      color = "#fafafa",
+      cellIds = 1:n_cells
+    )
+
+  expect_type(res$cellIds, "integer")
+
+})
+
+
+test_that("make_cellset stores cellIds as list if there is only 1 cell", {
+  n_cells <- 1
+  res <-
+    make_cellset(
+      key = "a_key",
+      name = "cellset_name",
+      color = "#fafafa",
+      cellIds = 1:n_cells
+    )
+
+  expect_type(res$cellIds, "list")
+
+})
