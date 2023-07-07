@@ -28,6 +28,10 @@ SUBSET_SEURAT_TASK_LIST <- list(
   "uploadToAWS" = "upload_to_aws"
 )
 
+COPY_TASK_LIST <- list(
+  "copyS3Objects" = "copy_s3_objects"
+)
+
 # list of task functions named by task name
 QC_TASK_LIST <- list(
   "classifier" = "filter_emptydrops",
@@ -46,7 +50,7 @@ INPUT_DIR <- "/input"
 gem2s <- list(
   max.edrops.fdr = 0.001,
   max.empty.counts = 100,
-  max.empty.drops = 50
+  max.empty.drops = 100
 )
 
 
@@ -61,18 +65,23 @@ RANDOM_SEED <- 42
 DEBUG_PATH <- "/debug"
 
 # File management, it needs to match the sample_file_type enum in sql
-# (they are originally defined in 20220304184711_schema.js in the api)
+# (they are originally defined in the structure of the SQL database)
 file_types_by_technology <- list(
   "10x" = list("barcodes10x", "features10x", "matrix10x"),
-  "rhapsody" = list("rhapsody")
+  "rhapsody" = list("rhapsody"),
+  "10x_h5" = list("10XH5")
 )
 
 file_names <- list(
   barcodes10x = "barcodes.tsv.gz",
   features10x = "features.tsv.gz",
   matrix10x = "matrix.mtx.gz",
-  rhapsody = "expression_data.st.gz"
+  rhapsody = "expression_data.st.gz",
+  "10XH5" = "matrix.h5.gz"
 )
+
+MITOCHONDRIAL_REGEX <- "^mt[-:]"
+RIBOSOMAL_REGEX <- "^M?RP[LS]|FAU|UBA52|DAP3"
 
 source("data-raw/cell_cycle_genes.R")
 
@@ -97,6 +106,7 @@ usethis::use_data(
   bucket_list,
   gem2s,
   SUBSET_SEURAT_TASK_LIST,
+  COPY_TASK_LIST,
   GEM2S_TASK_LIST,
   QC_TASK_LIST,
   INPUT_DIR,
@@ -110,6 +120,8 @@ usethis::use_data(
   IDS_SYM,
   IDS_IDS,
   cc_genes,
+  MITOCHONDRIAL_REGEX,
+  RIBOSOMAL_REGEX,
   pipeline_version,
   UNISAMPLE,
   internal = TRUE,
