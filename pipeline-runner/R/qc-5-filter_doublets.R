@@ -102,8 +102,10 @@ generate_default_values_doubletScores <- function(scdata) {
 
   is_singlet <- scdata$doublet_class == "singlet"
 
-  # if no singlets set threshold to 0, preventing some experiments to fail
-  threshold <- max(scdata$doublet_scores[is_singlet], 0.0, na.rm = TRUE)
+  threshold <- max(scdata$doublet_scores[is_singlet], na.rm = TRUE)
+
+  # if no singlets set threshold to 1, preventing some experiments to fail
+  if (!all(is_singlet)) threshold <- 1.0
 
   return(threshold)
 }
